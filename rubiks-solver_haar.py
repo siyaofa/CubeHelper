@@ -32,65 +32,65 @@ def extractFaceFromCam(face):
 				cv2.rectangle(frame, (cube_x, cube_y), (cube_x+cube_w, cube_y+cube_h), (0,255,0), 2)
 				# roi_gray_img = gray_img[cube_y:cube_y+cube_h, cube_x:cube_x+cube_w]
 				roi_img = frame[cube_y:cube_y+cube_h, cube_x:cube_x+cube_w]
+	##			small_frame = cv2.resize(cut_frame, (4, 3))
+				img_recognized,img_map=getMap.get_image_map(roi_img)
 				cv2.imshow('roi',cv2.flip(roi_img,1))
-##			small_frame = cv2.resize(cut_frame, (4, 3))
-			img_recognized,img_map=getMap.get_image_map(small_frame)
-			#cv2.imshow('real '+face,cv2.flip(cut_frame,1))
-			big_img_recognized = cv2.resize(img_recognized, (0,0), fx=alpha, fy=alpha)
-			#cv2.imshow(face,big_img_recognized)
-			if cam_num==1:
-				vis = np.concatenate((cut_frame, big_img_recognized), axis=1)
-			else:
-				vis = np.concatenate((cv2.flip(cut_frame,1), cv2.flip(big_img_recognized,1)), axis=1)
+				#cv2.imshow('real '+face,cv2.flip(cut_frame,1))
+				# big_img_recognized = cv2.resize(img_recognized, (frame.shape[0],frame.shape[1]))
+				#cv2.imshow(face,big_img_recognized)
+			if cv2.waitKey(1) & 0xFF == ord('r'):
+				cv2.imwrite(face+'.jpg',frame)
+				position = {}
+				#color_ind=['else','black','white','red','orange','green','blue','yellow']
+				
+				rowPixls=img_map.shape[0]/3
+				colPixls=img_map.shape[1]/3
+		
+				A1=img_map[0:rowPixls-1,0:rowPixls-1]
+				[(most_ind,most_num)]=Counter(A1.flat).most_common(1)
+				position[face+'1'] = color_ind[most_ind]
+
+				A4=img_map[0:rowPixls-1,rowPixls:2*rowPixls-1]
+				[(most_ind,most_num)]=Counter(A4.flat).most_common(1)
+				position[face+'2'] = color_ind[most_ind]
+
+				A7=img_map[0:rowPixls-1,2*rowPixls:img_map.shape[1]]
+				[(most_ind,most_num)]=Counter(A7.flat).most_common(1)
+				position[face+'3'] = color_ind[most_ind]
+
+				A2=img_map[rowPixls:2*rowPixls-1,0:rowPixls-1]
+				[(most_ind,most_num)]=Counter(A2.flat).most_common(1)
+				position[face+'4'] = color_ind[most_ind]
+
+				A5=img_map[rowPixls:2*rowPixls-1,rowPixls:2*rowPixls-1]
+				[(most_ind,most_num)]=Counter(A5.flat).most_common(1)
+				position[face+'5'] = color_ind[most_ind]
+
+				A8=img_map[rowPixls:2*rowPixls-1,2*rowPixls:img_map.shape[1]]
+				[(most_ind,most_num)]=Counter(A8.flat).most_common(1)
+				position[face+'6'] = color_ind[most_ind]
+
+				A3=img_map[2*rowPixls:img_map.shape[0],0:rowPixls-1]
+				[(most_ind,most_num)]=Counter(A3.flat).most_common(1)
+				position[face+'7'] = color_ind[most_ind]
+
+				A6=img_map[2*rowPixls:img_map.shape[0],rowPixls:2*rowPixls-1]
+				[(most_ind,most_num)]=Counter(A6.flat).most_common(1)
+				position[face+'8'] = color_ind[most_ind]
+
+				A9=img_map[2*rowPixls:img_map.shape[0],2*rowPixls:img_map.shape[1]]
+				[(most_ind,most_num)]=Counter(A9.flat).most_common(1)
+				position[face+'9'] = color_ind[most_ind]	
+
+				print position
+				break
+			# if cam_num==1:
+				# vis = np.concatenate((cut_frame, big_img_recognized), axis=1)
+			# else:
+				# vis = np.concatenate((cv2.flip(cut_frame,1), cv2.flip(big_img_recognized,1)), axis=1)
 			
-			cv2.imshow(face,vis)
+			# cv2.imshow(face,vis)
 			if cv2.waitKey(1) & 0xFF == ord('q'):
-					break
-			elif cv2.waitKey(1) & 0xFF == ord('r'):
-					cv2.imwrite(face+'.jpg',frame)
-					position = {}
-					#color_ind=['else','black','white','red','orange','green','blue','yellow']
-					
-					rowPixls=img_map.shape[0]/3
-					colPixls=img_map.shape[1]/3
-			
-					A1=img_map[0:rowPixls-1,0:rowPixls-1]
-					[(most_ind,most_num)]=Counter(A1.flat).most_common(1)
-					position[face+'1'] = color_ind[most_ind]
-
-					A4=img_map[0:rowPixls-1,rowPixls:2*rowPixls-1]
-					[(most_ind,most_num)]=Counter(A4.flat).most_common(1)
-					position[face+'2'] = color_ind[most_ind]
-
-					A7=img_map[0:rowPixls-1,2*rowPixls:img_map.shape[1]]
-					[(most_ind,most_num)]=Counter(A7.flat).most_common(1)
-					position[face+'3'] = color_ind[most_ind]
-
-					A2=img_map[rowPixls:2*rowPixls-1,0:rowPixls-1]
-					[(most_ind,most_num)]=Counter(A2.flat).most_common(1)
-					position[face+'4'] = color_ind[most_ind]
-
-					A5=img_map[rowPixls:2*rowPixls-1,rowPixls:2*rowPixls-1]
-					[(most_ind,most_num)]=Counter(A5.flat).most_common(1)
-					position[face+'5'] = color_ind[most_ind]
-
-					A8=img_map[rowPixls:2*rowPixls-1,2*rowPixls:img_map.shape[1]]
-					[(most_ind,most_num)]=Counter(A8.flat).most_common(1)
-					position[face+'6'] = color_ind[most_ind]
-
-					A3=img_map[2*rowPixls:img_map.shape[0],0:rowPixls-1]
-					[(most_ind,most_num)]=Counter(A3.flat).most_common(1)
-					position[face+'7'] = color_ind[most_ind]
-
-					A6=img_map[2*rowPixls:img_map.shape[0],rowPixls:2*rowPixls-1]
-					[(most_ind,most_num)]=Counter(A6.flat).most_common(1)
-					position[face+'8'] = color_ind[most_ind]
-
-					A9=img_map[2*rowPixls:img_map.shape[0],2*rowPixls:img_map.shape[1]]
-					[(most_ind,most_num)]=Counter(A9.flat).most_common(1)
-					position[face+'9'] = color_ind[most_ind]	
-
-					print position
 					break
 					
 
@@ -201,7 +201,7 @@ for i in range(-1,N-1):
 
 #rotate_face is the face which will turn late, direct=1 is underclockwise
 def face_rotate(rotate_face,direct):
-	deltat=0.05
+	deltat=0.02
 	theta=0
 	rotating_face=frame()
 	while theta<pi/2:
